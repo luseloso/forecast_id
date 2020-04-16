@@ -52,7 +52,21 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
         - "arn:aws:iam::aws:policy/AmazonForecastFullAccess"
         - "arn:aws:iam::aws:policy/IAMFullAccess"
-
+  ForecastRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - forecast.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonForecastFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
   # SageMaker notebook
   NotebookInstance:
     Type: "AWS::SageMaker::NotebookInstance"
@@ -67,3 +81,7 @@ Outputs:
   S3Bucket:
     Value: !Ref BucketName
     Description: S3 Bucket for object storage
+  ForecastRolte:
+    Value: !GetAtt [ForecastRole, Arn]
+    Description: This is the RoleArn you will need to use in your notebook allowing Forecast to import data from S3
+    
